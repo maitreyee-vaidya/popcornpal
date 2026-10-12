@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PopcornPal Case Study</title>
+  <meta name="description" content="PopcornPal: helping people find something to watch by just saying what they feel like, in their own language.">
+  <meta name="theme-color" content="#121318">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #121318; --surface: #1a1c22; --line: #2a2d35;
+      --text: #eceef3; --text-2: #b9bfcc; --muted: #868d9c;
+      --accent: #5b8cff;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.7 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    main { max-width: 680px; margin: 0 auto; padding: 56px 20px 72px; }
+    a { color: var(--accent); }
+    .top { font-size: 14px; color: var(--muted); margin: 0 0 32px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .top a { text-decoration: none; }
+    h1 { font-size: clamp(30px, 6vw, 40px); line-height: 1.15; margin: 0 0 14px; font-weight: 700; letter-spacing: -.01em; }
+    .lede { font-size: 19px; color: var(--text-2); margin: 0 0 24px; }
+    .btn { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; font-weight: 600; font-size: 16px; padding: 11px 20px; border-radius: 8px; }
+    .btn:hover { filter: brightness(1.08); }
+    .posters { display: flex; gap: 8px; margin: 36px 0 8px; opacity: .85; }
+    .posters img { width: calc((100% - 40px) / 6); aspect-ratio: 2/3; object-fit: cover; border-radius: 6px; background: var(--surface); }
+    h2 { font-size: 22px; margin: 52px 0 10px; font-weight: 700; }
+    p, li { color: var(--text-2); }
+    strong { color: var(--text); font-weight: 600; }
+    ul { padding-left: 20px; margin: 10px 0; }
+    li { margin: 8px 0; }
+    .examples { list-style: none; padding: 0; }
+    .examples li { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin: 10px 0; }
+    .examples li b { color: var(--text); font-weight: 600; }
+    .examples li span { display: block; color: var(--muted); font-size: 15px; }
+    .quote { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 16px 0; color: var(--text); }
+    .simple { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 16px 0; }
+    .simple div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+    .simple b { display: block; color: var(--text); margin-bottom: 2px; }
+    .simple span { color: var(--muted); font-size: 15px; }
+    .end { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); }
+    footer { margin-top: 40px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><span>🍿 PopcornPal · Case study</span><a href="./">Open the app →</a></div>
+
+  <h1>Finding something to watch, by just saying what you feel like.</h1>
+  <p class="lede">PopcornPal lets you describe the kind of movie or show you want, in your own words and your own language, by typing or speaking, and suggests things you can actually watch on JioHotstar.</p>
+  <a class="btn" href="./">Try PopcornPal</a>
+
+  <div class="posters" aria-hidden="true">
+    <img src="https://image.tmdb.org/t/p/w185/wE0I6efAW4cDDmZQWtwZMOW44EJ.jpg"alt="">
+    <img src="https://image.tmdb.org/t/p/w185/eebUPRI4Z5e1Z7Hev4JZAwMIFkX.jpg"alt="">
+    <img src="https://image.tmdb.org/t/p/w185/jIsKmkxMzdCZ0Ux1GVSnu8m6Na6.jpg"alt="">
+    <img src="https://image.tmdb.org/t/p/w185/bswrtewwthpsh6nABiqKevU4UBI.jpg"alt="">
+    <img src="https://image.tmdb.org/t/p/w185/1T21FblunT0y8fz7YaW8JMYgUKm.jpg"alt="">
+    <img src="https://image.tmdb.org/t/p/w185/nfnhwfUEFuSOxxf4jDdBlY6Lccw.jpg"alt="">
+  </div>
+
+  <h2>The problem</h2>
+  <p>Search on streaming apps works well when you already know the name of what you want. But most evenings, people don’t. They know the <strong>feeling</strong> they want:</p>
+  <ul>
+    <li>“Something light to watch with my family.”</li>
+    <li>“A thriller like Drishyam, but not too long.”</li>
+    <li>“Koi achhi comedy batao.”</li>
+  </ul>
+  <p>Typing words like these into a normal search box usually doesn’t work. And in India the problem is bigger: people switch between English, Hindi and their own language, often in the same sentence, and many would rather speak than type, especially on a TV remote.</p>
+
+  <h2>The idea</h2>
+  <p class="quote">Let people ask for a movie the way they’d ask a friend, and keep the conversation going until they find one.</p>
+
+  <h2>What it does</h2>
+  <ul class="examples">
+    <li><b>Understands everyday requests</b><span>“A feel-good comedy under two hours” or “something to watch with my parents”.</span></li>
+    <li><b>Lets you keep talking</b><span>Say “shorter”, “in Tamil” or “more like the second one” and the suggestions change.</span></li>
+    <li><b>Works in Indian languages</b><span>Type or speak in Hindi, Telugu, Tamil, Malayalam, Kannada, Bengali, Marathi or Hinglish.</span></li>
+    <li><b>Shows only what you can watch</b><span>Suggestions are limited to titles on JioHotstar, so you never find something you can’t play.</span></li>
+    <li><b>Learns what you like</b><span>Tap 👍 or 👎 and future suggestions get closer to your taste. This stays on your phone.</span></li>
+    <li><b>Is honest when it can’t help</b><span>If it doesn’t have a title or can’t do something, like live cricket, it says so and offers the next best thing.</span></li>
+  </ul>
+
+  <h2>Who it’s for</h2>
+  <div class="simple">
+    <div><b>The undecided viewer</b><span>Knows the mood, not the name.</span></div>
+    <div><b>The regional viewer</b><span>Wants great films in their own language.</span></div>
+    <div><b>The family on the sofa</b><span>Needs something everyone can watch.</span></div>
+    <div><b>The voice-first user</b><span>Would rather speak than type.</span></div>
+  </div>
+
+  <h2>What I learned while building it</h2>
+  <p>My first version looked great when I tested it with questions I’d written myself. When I tried it like a real person, with questions like “Allu Arjun movies” or “I’m sad, cheer me up”, it often got things wrong, and worse, it <strong>pretended to know</strong>, showing random popular films instead.</p>
+  <p>The biggest improvements didn’t come from making it smarter. They came from making it <strong>more honest and more local</strong>:</p>
+  <ul>
+    <li>Saying clearly when something isn’t available.</li>
+    <li>Staying in the viewer’s language instead of falling back to Hollywood hits.</li>
+    <li>Putting the exact title first when someone types a name.</li>
+  </ul>
+  <p>After these changes, it handled almost all of a fresh set of everyday questions I hadn’t practised on.</p>
+
+  <h2>How I’d know it’s working</h2>
+  <p>The one thing that matters: <strong>do more people who search actually start watching something?</strong> If yes, it’s helping. I’d also make sure it isn’t making things worse, for example by being slow, using too much mobile data, or suggesting things people can’t play.</p>
+  <p>To be sure, I’d first test it with a small share of users alongside today’s search, compare the two, and only then roll it out more widely.</p>
+
+  <h2>What I’d do next</h2>
+  <ul>
+    <li><strong>Connect it to live sports.</strong> Cricket is huge on JioHotstar. Asking for “today’s match” should take you straight there.</li>
+    <li><strong>Watch together.</strong> Let two or three people in a family share their tastes and find something everyone likes.</li>
+    <li><strong>Make voice great on TV.</strong> Speaking into the remote should feel effortless.</li>
+  </ul>
+
+  <div class="end">
+    <p style="margin:0 0 16px">The best way to understand it is to try it. Ask for something you’d actually watch tonight.</p>
+    <a class="btn" href="./">Open PopcornPal</a>
+  </div>
+
+  <footer>
+    An independent concept, not affiliated with or endorsed by JioHotstar. Movie information and images from TMDB (this product uses the TMDB API but is not endorsed or certified by TMDB). Built at no running cost.
+    <br><a href="eval.html">Detailed test results</a> · <a href="insights.html">Usage insights</a>
+  </footer>
+</main>
+</body>
+</html>

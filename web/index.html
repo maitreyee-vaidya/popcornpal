@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PopcornPal</title>
+  <meta name="description" content="PopcornPal: a conversational, voice-first movie discovery concept for Indian streaming. Semantic search runs in your browser.">
+  <meta name="theme-color" content="#0f1014">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://image.tmdb.org">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="rail" aria-label="Main">
+    <a class="rail-logo" href="#" data-nav="home" aria-label="PopcornPal home">🍿</a>
+    <button type="button" data-nav="home" class="active" aria-label="Home">
+      <svg viewBox="0 0 24 24"><path d="M12 3 3 10.2V21h6.5v-6h5v6H21V10.2z"/></svg><span>Home</span>
+    </button>
+    <button type="button" data-nav="search" aria-label="Ask">
+      <svg viewBox="0 0 24 24"><path d="M10.5 3a7.5 7.5 0 0 1 5.96 12.05l4.25 4.24-1.42 1.42-4.24-4.25A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"/></svg><span>Ask</span>
+    </button>
+    <button type="button" data-nav="feed" aria-label="Previews">
+      <svg viewBox="0 0 24 24"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h10V5H7Zm3 3.5 5 3.5-5 3.5v-7Z"/></svg><span>Previews</span>
+    </button>
+    <button type="button" data-nav="taste" aria-label="Your taste">
+      <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 4.3 2.4.7-1.3 2.2-2.4 4.3-2.4 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21Z"/></svg><span>Your taste</span>
+    </button>
+    <button type="button" data-nav="voice" aria-label="Voice search">
+      <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg><span>Voice</span>
+    </button>
+    <button type="button" data-nav="langs" aria-label="Languages">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 6h-2.95a15.7 15.7 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.9 8ZM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96ZM4.26 14a8.2 8.2 0 0 1 0-4h3.38a16.5 16.5 0 0 0 0 4H4.26Zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A8 8 0 0 1 5.08 16Zm2.95-8H5.08a8 8 0 0 1 4.33-3.56A15.7 15.7 0 0 0 8.03 8ZM12 19.96A14.1 14.1 0 0 1 10.09 16h3.82A14.1 14.1 0 0 1 12 19.96ZM14.34 14H9.66a14.7 14.7 0 0 1 0-4h4.68a14.7 14.7 0 0 1 0 4Zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95a8.03 8.03 0 0 1-4.33 3.56ZM16.36 14a16.5 16.5 0 0 0 0-4h3.38a8.2 8.2 0 0 1 0 4h-3.38Z"/></svg><span>Languages</span>
+    </button>
+    <button type="button" data-nav="settings" aria-label="Voice settings">
+      <svg viewBox="0 0 24 24"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.65-2-3.46-2.48 1a7.4 7.4 0 0 0-1.73-1L15 3.25h-4l-.3 2.64a7.4 7.4 0 0 0-1.72 1l-2.49-1-2 3.46L6.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.65 2 3.46 2.48-1c.53.41 1.11.75 1.73 1l.3 2.64h4l.3-2.64a7.4 7.4 0 0 0 1.72-1l2.49 1 2-3.46L19.4 13ZM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" transform="translate(-1 0)"/></svg><span>Settings</span>
+    </button>
+  </nav>
+
+  <div class="app">
+    <header class="mtop">
+      <a href="#" data-nav="home" class="mbrand">🍿 PopcornPal</a>
+      <span class="mtop-acts">
+        <button type="button" data-nav="feed" class="pill">▶ Previews</button>
+        <button type="button" data-nav="langs" class="pill">Languages</button>
+      </span>
+    </header>
+
+    <main id="home" class="home">
+      <section id="hero" class="hero" aria-label="Spotlight"></section>
+
+      <section class="askcard">
+        <div class="ask-head">
+          <h1>Ask <span class="grad">PopcornPal</span></h1>
+          <p>Say it like you’d say it to a friend. Then keep talking: “shorter”, “in Tamil”, “more like the second one”.</p>
+        </div>
+        <div class="try" id="try"></div>
+      </section>
+
+      <div id="rails"></div>
+    </main>
+
+    <main id="feed" class="feed" hidden></main>
+
+    <main id="chat" class="chat" hidden>
+      <div id="thread" class="thread" aria-live="polite"></div>
+    </main>
+
+    <footer class="legal">
+      Anonymous usage stats help improve results; turn them off in Settings. <a href="case-study.html">Case study</a> · <a href="insights.html">Insights</a> · <a href="eval.html">Search eval</a><br>
+      PopcornPal is an independent concept project exploring conversational, voice-first discovery for Indian streaming. Not affiliated with or endorsed by JioHotstar.
+      Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a> (this product uses the TMDB API but is not endorsed or certified by TMDB) and IMDb datasets.
+    </footer>
+  </div>
+
+  <form id="composer" class="composer" autocomplete="off">
+    <p id="voice-note" class="voice-note" hidden></p>
+    <div class="composer-top">
+      <button type="button" id="hs-only" class="hs-toggle" aria-pressed="false"><span class="dot" aria-hidden="true"></span> Only on JioHotstar</button>
+    </div>
+    <div class="box">
+      <svg class="sicon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 0 1 5.96 12.05l4.25 4.24-1.42 1.42-4.24-4.25A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"/></svg>
+      <textarea id="q" rows="1" placeholder="Try “a Telugu thriller like Drishyam”" aria-label="Describe what you want to watch"></textarea>
+      <label class="mic-lang" title="Language you’ll speak in">
+        <span class="sr-only">Speak in</span>
+        <select id="mic-lang" aria-label="Language you’ll speak in">
+          <option value="en-IN">EN</option><option value="hi-IN">हि</option><option value="te-IN">తె</option><option value="ta-IN">த</option>
+          <option value="ml-IN">മ</option><option value="kn-IN">ಕ</option><option value="bn-IN">বা</option><option value="mr-IN">म</option><option value="en-US">US</option>
+        </select>
+      </label>
+      <button id="mic" class="mic" type="button" aria-label="Speak your request" aria-pressed="false">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 15a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-2.08A7 7 0 0 0 19 12h-2Z"/></svg>
+      </button>
+      <button class="send" type="submit" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.39 10.2 15 12 3.39 13.8z"/></svg>
+      </button>
+    </div>
+    <div id="status" class="status" role="status">
+      <span id="status-text">Loading catalog…</span>
+      <span class="track"><span id="status-bar"></span></span>
+    </div>
+  </form>
+
+  <dialog id="langs" class="sheet">
+    <form method="dialog">
+      <h2>Your languages</h2>
+      <p class="sub">We’ll put these first on Home and nudge them up in results. Name a language in your request to override.</p>
+      <div id="lang-grid" class="lang-grid"></div>
+      <div class="sheet-actions"><button class="btn-grad" value="ok">Done</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="taste" class="sheet wide">
+    <form method="dialog">
+      <h2>Tune PopcornPal to your taste</h2>
+      <p class="sub">Tap a few films you love. Everything stays on this device: your picks shape a taste profile that nudges search, Home and Previews.</p>
+      <div id="taste-grid" class="taste-grid"></div>
+      <div class="sheet-actions spread">
+        <button type="button" class="btn-ghost small" id="taste-reset">Reset my taste</button>
+        <button class="btn-grad" value="ok">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settings" class="sheet">
+    <form method="dialog">
+      <h2>My streaming apps</h2>
+      <p class="sub" id="subs-note">Titles on these apps get a lift, and “something I can watch” filters to them.</p>
+      <div id="subs-grid" class="subs-grid"></div>
+      <label class="row"><input type="checkbox" id="opt-only-mine"> Only show what I can watch on my apps</label>
+      <h2>Search mode</h2>
+      <label class="field">Smart matching (semantic search)
+        <select id="opt-smart">
+          <option value="auto">Auto: lite on slow or data-saver connections</option>
+          <option value="on">Always on (≈34 MB once, best results)</option>
+          <option value="lite">Lite: keyword search only (saves data)</option>
+        </select>
+      </label>
+      <h2>Privacy</h2>
+      <label class="row"><input type="checkbox" id="opt-analytics" checked> Share anonymous usage (searches, clicks) to improve results</label>
+      <p class="sub" id="analytics-note">No account, no cookies, no device ID. A random per-tab id, scrubbed query text. <a href="insights.html" target="_blank" rel="noopener">See what’s collected</a>.</p>
+      <h2>Voice</h2>
+      <label class="field">Speech recognition
+        <select id="opt-engine">
+          <option value="browser">Browser (instant, live transcript)</option>
+          <option value="local">On-device Whisper (private, ~40 MB once)</option>
+        </select>
+      </label>
+      <label class="field">Speak in
+        <select id="opt-voice-lang">
+<option value="en-IN">English (India)</option>
+          <option value="hi-IN">हिन्दी · Hindi</option>
+          <option value="te-IN">తెలుగు · Telugu</option>
+          <option value="ta-IN">தமிழ் · Tamil</option>
+          <option value="ml-IN">മലയാളം · Malayalam</option>
+          <option value="kn-IN">ಕನ್ನಡ · Kannada</option>
+          <option value="bn-IN">বাংলা · Bengali</option>
+          <option value="mr-IN">मराठी · Marathi</option>
+          <option value="en-US">English (US)</option>
+        </select>
+      </label>
+      <label class="row"><input type="checkbox" id="opt-speak" checked> Speak replies after voice queries</label>
+      <label class="row"><input type="checkbox" id="opt-handsfree"> Hands-free: keep listening after each reply</label>
+      <p class="sub">Tip: <kbd>⌘/Ctrl</kbd> + <kbd>Space</kbd> toggles the mic.</p>
+      <div class="sheet-actions"><button class="btn-grad" value="ok">Done</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="detail" class="detail"></dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

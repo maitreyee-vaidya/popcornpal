@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PopcornPal Insights</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0f1014; --surface: #1a1c23; --line: #2b2f3a; --text: #f2f4f8; --muted: #8f98b2; --ok: #38d996; --bad: #ff7d8a;
+      --grad: linear-gradient(90deg, #2f6df6, #6a3fe0, #d52a8c); color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 Inter, system-ui, sans-serif; }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 60px; }
+    h1 { font-size: 28px; margin: 0 0 4px; font-weight: 800; }
+    .sub { color: var(--muted); margin: 0 0 24px; max-width: 760px; }
+    a { color: #8fb3ff; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 26px; }
+    .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+    .kpi b { display: block; font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .kpi span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    .kpi small { color: var(--muted); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+    .card h2 { font-size: 15px; margin: 0 0 4px; }
+    .card p.hint { color: var(--muted); font-size: 12px; margin: 0 0 12px; }
+    .row { display: grid; grid-template-columns: minmax(0, 1fr) 140px 44px; gap: 10px; align-items: center; padding: 4px 0; }
+    .row .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+    .row .bar i { display: block; height: 100%; background: var(--grad); border-radius: 4px; }
+    .row .n { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+    .empty { color: var(--muted); font-size: 13px; }
+    .setup { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; max-width: 760px; }
+    .setup ol { padding-left: 20px; }
+    .setup li { margin: 6px 0; }
+    .spark { display: flex; align-items: flex-end; gap: 3px; height: 80px; }
+    .spark i { flex: 1; background: var(--grad); border-radius: 3px 3px 0 0; min-height: 2px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Insights</h1>
+    <p class="sub">What people ask PopcornPal and what they do next. Last 30 days, anonymous: a random per-tab id, no accounts or cookies, query text scrubbed and only shown once two or more different sessions asked it. <a href="./">Back to PopcornPal</a></p>
+    <div id="out"><p class="empty">Loading…</p></div>
+  </main>
+  <script type="module">
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    const pct = (a, b) => (b ? `${Math.round((100 * a) / b)}%` : '–');
+    const LANG = new Intl.DisplayNames(['en'], { type: 'language' });
+    const lname = (c) => { try { return LANG.of(String(c).split('-')[0]); } catch { return c; } };
+    const bars = (rows, label, empty = 'No data yet.') => {
+      if (!rows?.length) return `<p class="empty">${empty}</p>`;
+      const max = Math.max(...rows.map((r) => r.n));
+      return rows.map((r) => `<div class="row"><span class="label" title="${esc(label(r))}">${esc(label(r))}</span><span class="bar"><i style="width:${(100 * r.n) / max}%"></i></span><span class="n">${r.n}</span></div>`).join('');
+    };
+    const out = document.getElementById('out');
+    let d;
+    try { d = await fetch(`/api/stats?t=${Math.floor(Date.now() / 15000)}`, { cache: 'no-store' }).then((r) => r.json()); } catch { d = null; }
+    if (!d || d.connected === false) {
+      out.innerHTML = `<div class="setup"><h2>Analytics isn’t connected yet</h2>
+        <p class="sub">The app already sends anonymous events; they’re dropped until a database is attached. Connecting one is free:</p>
+        <ol><li>Open the <b>popcornpal</b> project on Vercel → <b>Storage</b> → <b>Create Database</b> → <b>Neon</b> (free plan).</li>
+        <li>Connect it to the project (all environments). Vercel adds <code>DATABASE_URL</code> automatically.</li>
+        <li>Redeploy. Events start appearing here within a minute.</li></ol></div>`;
+    } else if (d.error) {
+      out.innerHTML = `<p class="empty">Couldn’t load stats right now.</p>`;
+    } else {
+      const t = d.totals;
+      out.innerHTML = `
+        <div class="kpis">
+          <div class="kpi"><span>Sessions</span><b>${t.sessions}</b></div>
+          <div class="kpi"><span>Searches</span><b>${t.searches}</b><small>${t.follow_ups} follow-ups</small></div>
+          <div class="kpi"><span>Search → click</span><b>${pct(t.clicking_sessions, t.searching_sessions)}</b><small>of searching sessions</small></div>
+          <div class="kpi"><span>Voice share</span><b>${pct(t.voice_searches, t.searches)}</b></div>
+          <div class="kpi"><span>Not understood</span><b>${pct(t.low_conf + t.zero_results, t.searches)}</b><small>low confidence or empty</small></div>
+          <div class="kpi"><span>👍 / 👎</span><b>${t.likes} / ${t.dislikes}</b></div>
+        </div>
+        <div class="grid">
+          <div class="card"><h2>Searches per day</h2><p class="hint">Daily volume</p>
+            ${d.daily.length ? `<div class="spark">${d.daily.map((x) => `<i title="${x.day}: ${x.searches}" style="height:${(100 * x.searches) / Math.max(1, ...d.daily.map((y) => y.searches))}%"></i>`).join('')}</div>` : '<p class="empty">No data yet.</p>'}</div>
+          <div class="card"><h2>Top searches</h2><p class="hint">Asked by 2+ sessions</p>${bars(d.top, (r) => r.q)}</div>
+          <div class="card"><h2>What we didn’t understand</h2><p class="hint">Low-confidence or empty results: the backlog for the parser</p>${bars(d.misses, (r) => r.q, 'Nothing yet. 🎉')}</div>
+          <div class="card"><h2>Clicks by result position</h2><p class="hint">Healthy ranking puts most clicks in the top 3</p>${bars(d.ranks, (r) => `#${r.rank}`)}</div>
+          <div class="card"><h2>Languages asked for</h2><p class="hint">Named or implied by the query’s script</p>${bars(d.langs, (r) => lname(r.lang))}</div>
+          <div class="card"><h2>Voice languages</h2><p class="hint">What people speak in</p>${bars(d.voiceLangs, (r) => lname(r.lang || 'en'))}</div>
+          <div class="card"><h2>Previews feed</h2><p class="hint">Actions, with average seconds watched per view</p>${bars(d.feed, (r) => `${r.action}${r.avg_dwell != null ? ` · ${r.avg_dwell}s avg` : ''}`)}</div>
+        </div>`;
+    }
+  </script>
+</body>
+</html>

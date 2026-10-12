@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PopcornPal Search Eval</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍿</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: #0f1014; --surface: #1a1c23; --line: #2b2f3a; --text: #f2f4f8; --muted: #8f98b2; --ok: #38d996; --bad: #ff7d8a; color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 Inter, system-ui, sans-serif; }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 60px; }
+    h1 { font-size: 28px; margin: 0 0 4px; font-weight: 800; }
+    .sub { color: var(--muted); margin: 0 0 24px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 28px; }
+    .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+    .kpi b { display: block; font-size: 26px; font-weight: 800; }
+    .kpi span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    h2 { font-size: 16px; margin: 28px 0 10px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 640px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    td.q { font-weight: 600; max-width: 260px; overflow-wrap: anywhere; }
+    td.top { color: var(--muted); font-size: 12px; }
+    .p { color: var(--ok); font-weight: 700; } .f { color: var(--bad); font-weight: 700; }
+    .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+    .bar i { display: block; height: 100%; background: linear-gradient(90deg, #2f6df6, #d52a8c); }
+    a { color: #8fb3ff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Search quality eval</h1>
+    <p class="sub">Each query runs through the live parser + ranker in your browser and is checked automatically against its top 10 results. <b>Blind</b> queries were written before the last round of fixes and are never tuned against, so that’s the honest number; <b>Field</b> queries come from a hands-on user test and were fixed against; <b>Dev</b> is the development set. <a href="./">Back to PopcornPal</a></p>
+    <div id="out"><p class="sub" id="status">Loading model…</p></div>
+  </main>
+  <script type="module">
+    import { runEval } from './js/eval.js';
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    const status = document.getElementById('status');
+    const res = await runEval((p) => { if (p.stage === 'model') status.textContent = `Loading model… ${Math.round(100 * p.loaded / p.total)}%`; if (p.stage === 'ready') status.textContent = 'Running queries…'; });
+    const bySet = (name) => { const rs = res.rows.filter((r) => r.set === name); return [rs.filter((r) => r.pass).length, rs.length]; };
+    const [devP, devN] = bySet('Dev'), [fieldP, fieldN] = bySet('Field'), [blindP, blindN] = bySet('Blind'), [b1P, b1N] = bySet('Blind v1');
+    const pass = res.rows.filter((r) => r.pass).length;
+    const convPass = res.conv.filter((r) => r.pass).length;
+    const cats = [...new Set(res.rows.map((r) => `${r.set} · ${r.cat}`))].map((c) => {
+      const rs = res.rows.filter((r) => `${r.set} · ${r.cat}` === c);
+      return [c, rs.filter((r) => r.pass).length, rs.length];
+    });
+    document.getElementById('out').innerHTML = `
+      <div class="kpis">
+        <div class="kpi"><span>Blind set (never tuned)</span><b>${blindP}/${blindN}</b><div class="bar"><i style="width:${100 * blindP / blindN}%"></i></div></div>
+        <div class="kpi"><span>Field set (user test)</span><b>${fieldP}/${fieldN}</b></div>
+        <div class="kpi"><span>Blind v1 (retired)</span><b>${b1P}/${b1N}</b></div>
+        <div class="kpi"><span>Dev set</span><b>${devP}/${devN}</b></div>
+        <div class="kpi"><span>Conversation turns</span><b>${convPass}/${res.conv.length}</b></div>
+        <div class="kpi"><span>Search latency p50 / p95</span><b>${res.p50.toFixed(0)} / ${res.p95.toFixed(0)} ms</b></div>
+        <div class="kpi"><span>Catalog</span><b>${res.titles.toLocaleString()}</b></div>
+      </div>
+      <h2>By category</h2>
+      <div class="table-wrap"><table><tr><th>Category</th><th>Passed</th></tr>
+      ${cats.map(([c, p, n]) => `<tr><td>${esc(c)}</td><td><span class="${p === n ? 'p' : 'f'}">${p}/${n}</span></td></tr>`).join('')}</table></div>
+      <h2>Queries</h2>
+      <div class="table-wrap"><table><tr><th></th><th>Query</th><th>Check</th><th>Top results</th></tr>
+      ${res.rows.map((r) => `<tr><td class="${r.pass ? 'p' : 'f'}">${r.pass ? 'PASS' : 'FAIL'}</td><td class="q">${esc(r.q.length > 60 ? r.q.slice(0, 60) + '…' : r.q)}</td><td>${esc(r.desc)}</td><td class="top">${r.top.map(esc).join('<br>')}${r.relaxed.length ? `<br><em>relaxed: ${esc(r.relaxed.join(', '))}</em>` : ''}</td></tr>`).join('')}</table></div>
+      <h2>Multi-turn conversation</h2>
+      <div class="table-wrap"><table><tr><th></th><th>Turn</th><th>Top results</th></tr>
+      ${res.conv.map((r) => `<tr><td class="${r.pass ? 'p' : 'f'}">${r.pass ? 'PASS' : 'FAIL'}</td><td class="q">${esc(r.q)}</td><td class="top">${r.top.map(esc).join('<br>')}</td></tr>`).join('')}</table></div>`;
+    window.__evalResult = { blind: `${blindP}/${blindN}`, blindV1: `${b1P}/${b1N}`, field: `${fieldP}/${fieldN}`, dev: `${devP}/${devN}`, pass, total: res.rows.length, convPass, p50: res.p50, p95: res.p95, fails: res.rows.filter((r) => !r.pass).map((r) => `[${r.set}] ${r.q} → ${r.top.slice(0, 4).join('; ')}${r.notes.length ? ' | notes: ' + r.notes.join(' ') : ''}`) };
+  </script>
+</body>
+</html>

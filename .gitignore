@@ -1,0 +1,10 @@
+raw/
+__pycache__/
+.venv/
+.vercel
+node_modules/
+.env*
+.claude/
+.agents/
+skills-lock.json
+.DS_Store
